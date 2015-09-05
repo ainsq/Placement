@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title></title>
+    </head>
+    <body>
+        The Number of student : <input type="text" id="sum"><br>
+        The Number of desk in row : <input type="text" id="line"><br>
+        <button onclick="setASit();">make</button>
+        <div id="tablePlace"></div>
+    </body>
+    <script>
+        var table = document.createElement("table");
+        var allp, lineP;
+        var makeAsitAr = 0, setBoyar = 0, makeGirlar = 0;
+        var girlNum;
+        var boys = [], girls = [];
+        function setASit(){
+            allP = document.getElementById('sum').value;
+            lineP = document.getElementById('line').value;
+            
+            if(isNaN(allP) || isNaN(lineP)){
+                alert("please input number only!!");
+            }else{
+                makeASit(allP,lineP);
+                girlNum = Number(prompt('please input the number of girl students'));
+                setBoy(allP);
+                alert("please select the girl's position!");
+                
+            }
+        }
+        
+        function makeASit(allP, lineP){
+            if(makeAsitAr == 0){
+                var lineNum = parseInt(allP / lineP);
+                var countSit = 0;
+                if((allP%lineP)>0) lineNum++;
+                for(var i=1; i<=lineNum; i++){
+                    var tr = document.createElement('tr');
+                    for(var j=1; j<=lineP; j++){
+                        var td = document.createElement('td');
+                        var tdid = "td" + ++countSit;
+                        var countstring = String(countSit);
+                        td.style.border = "1px solid black";
+                        td.style.width = "100px";
+                        td.style.height = "40px";
+                        td.onclick= function(){makeGirl(this.id)};
+                        td.id = tdid;
+                        tr.appendChild(td);
+                        if(countSit == allP) break;
+                    }
+                    table.appendChild(tr);
+                }
+                document.getElementById('tablePlace').appendChild(table);
+                makeAsitAr++;
+            }
+        }
+        function setBoy(allP){
+            var i;
+            for(i=0; i<=allP-1; i++){
+                boys[i] = i+1;
+            }
+            setBoyar++;
+        }
+        function makeGirl(elementNum){
+            if(setBoyar == 1 && makeGirlar == 0 && girlNum != 0){
+                var i, flag=0;
+                var eleN = makeNum(elementNum);
+                for(i=0; i<girls.length; i++){
+                    if(girls[i] == eleN){
+                        flag=1; 
+                    }
+                }
+                
+                if(flag==0){
+                    upGirl(eleN);
+                }else{
+                    downGirl(eleN);
+                }
+                console.log(flag);
+                if(girls.length == girlNum){
+                    var answer = confirm("already done?");
+                    if(answer == true){
+                        makeGirlar=1;
+                    }
+                    else
+                        allGirlDelete();
+                }
+            }else if(girlNum == 0){
+            }
+        }
+        
+        function upGirl(elementNum){
+            var selectdocu = document.getElementById('td' + String(
+elementNum));
+            selectdocu.style.backgroundColor = 'hotpink';
+            girls.push(elementNum);
+            boys[elementNum-1] = undefined;
+        }
+        
+        function downGirl(elementNum){
+            var i, popNum;
+            var selectdocu = document.getElementById('td' + elementNum);
+            selectdocu.style.backgroundColor = 'white';
+            for(i=0; i<girls.length; i++){
+                if(elementNum == girls[i])
+                    popNum = i;
+            }
+            girls[popNum] = undefined;
+            girls.sort();
+            girls.pop();
+            boys[elementNum-1] = elementNum;
+        }
+        function allGirlDelete(){
+            var i;
+            for(i=1; i<=Number(allP); i++){
+                document.getElementById('td'+i).style.backgroundColor='white';
+                boys[i-1] = i;
+            }
+            while(girls.length != 0){
+                girls.pop();
+            }
+        }
+        
+        function makeNum(elementNum){
+            var returner = 0;
+            if(elementNum.length ==3)
+                returner += Number(elementNum[2]);
+            else
+                returner += Number(elementNum[2]*10) + Number(elementNum[3]);
+            return returner;
+        }
+                
+    </script>
+</html>
